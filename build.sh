@@ -39,21 +39,21 @@ if [ "$DNP3_SUPPORT" = "Y" -o "$DNP3_SUPPORT" = "y" -o "$DNP3_SUPPORT" = "yes" ]
 
 	cd dnp3_build
 
-	#create swapfile to prevent out of memory errors
-	#echo creating swapfile...
-	#sudo dd if=/dev/zero of=swapfile bs=1M count=1000
-	#sudo mkswap swapfile
-	#sudo swapon swapfile
-
 	#build opendnp3 and install locally
 	INSTALL_LOC=./install
+
+	# NON-STANDARD GCC LOCATION: Set C_LOC and CXX_LOC to your gcc and g++ >= 4.9
+	# and pass these options to cmake (uncomment following 3 lines and comment
+	# out other cmake
+	# Also make sure to change `core/core_builders/dnp3_enabled/build_normal.sh`
+	#C_LOC=/toolchains/bin/gcc
+	#CXX_LOC=/toolchains/bin/g++
+	#cmake ../opendnp3 -DSTATICLIBS=ON -DCMAKE_C_COMPILER=$C_LOC -DCMAKE_CXX_COMPILER=$CXX_LOC -DCMAKE_INSTALL_PREFIX=$INSTALL_LOC
+
 	cmake ../dnp3 -DSTATICLIBS=ON -DCMAKE_INSTALL_PREFIX=$INSTALL_LOC 
         make 
        	make install
 
-	#remove swapfile
-	#sudo swapoff swapfile
-	#sudo rm -f ./swapfile
 	cd ..
 else
 	echo Skipping DNP3 installation
