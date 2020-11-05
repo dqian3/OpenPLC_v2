@@ -37,28 +37,23 @@ if [ "$DNP3_SUPPORT" = "Y" -o "$DNP3_SUPPORT" = "y" -o "$DNP3_SUPPORT" = "yes" ]
 	mv ./core/dnp3_dummy.cpp ./core/dnp3_dummy.disabled 2> /dev/null
 	cp -f ./core/core_builders/dnp3_enabled/*.* ./core/core_builders/
 
-	#make sure cmake is installed
-	sudo apt-get install cmake
-
-	#download opendnp3
-	#git clone --recursive https://github.com/automatak/dnp3.git
-	cd dnp3
+	cd dnp3_build
 
 	#create swapfile to prevent out of memory errors
-	echo creating swapfile...
-	sudo dd if=/dev/zero of=swapfile bs=1M count=1000
-	sudo mkswap swapfile
-	sudo swapon swapfile
+	#echo creating swapfile...
+	#sudo dd if=/dev/zero of=swapfile bs=1M count=1000
+	#sudo mkswap swapfile
+	#sudo swapon swapfile
 
-	#build opendnp3
-	cmake ../dnp3
-	make
-	sudo make install
-	sudo ldconfig
+	#build opendnp3 and install locally
+	INSTALL_LOC=./install
+	cmake ../dnp3 -DSTATICLIBS=ON -DCMAKE_INSTALL_PREFIX=$INSTALL_LOC 
+        make 
+       	make install
 
 	#remove swapfile
-	sudo swapoff swapfile
-	sudo rm -f ./swapfile
+	#sudo swapoff swapfile
+	#sudo rm -f ./swapfile
 	cd ..
 else
 	echo Skipping DNP3 installation
@@ -122,7 +117,7 @@ select opt in $OPTIONS; do
 		cd ..
 		./build_core.sh
 		exit
-    elif [ "$opt" = "PiXtend_2S" ]; then
+	elif [ "$opt" = "PiXtend_2S" ]; then
 		cp ./hardware_layers/pixtend2s.cpp ./hardware_layer.cpp
 		cp ./core_builders/build_rpi.sh ../build_core.sh
 		echo [OPENPLC]
